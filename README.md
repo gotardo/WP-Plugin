@@ -1,7 +1,7 @@
 WP Plugin
 ================
 
-An helper class for WordPress plugin development.
+A helper class for WordPress plugin development.
 
 ### Installing
 1. Upload the plugin folder to your *wp-content/pplugins* directory.
@@ -9,15 +9,12 @@ An helper class for WordPress plugin development.
 
 ### Starting your plugin
 In your new plugin main file you can start using some helper functions from the `\WPFW\Plugin` class. 
-
 ```php
 \WPFW\Plugin::adminNotice('Hello, world!');
-
 ```
 
 #### Basic start
 Create your class extending `\WPFW\Plugin` and create an instance. This will initiate your plugin. In the following 
-
 ```php
 class MyPlugin extends \WPFW\Plugin {
 //We'll leave the body of the plugin empty for now...
@@ -26,16 +23,12 @@ $aPlugin = new MyPlugin();
 ```
 
 #### Helper functions
-
 Plugin class provides some helper functions that can be useful to code faster:
-
 `\WPFW\Plugin::adminNotice($text)` Displays an admin notice in wp-admin with the message `$text`
-
 
 ### Autoloader
 
-The plugin will try to autoload all classes from your `{your_plugin_path}/inc/` directory. You can follow a name convention to load them. Namespaces and underscores will be readed as folders, so...
-class `\Namespace\Foo_Thing` would map to `{your_plugin_path}/inc/Namespace/Foo/Thing.php`
+The plugin will try to autoload all classes from your `{your_plugin_path}/inc/` directory. You can follow a name convention to load them. Namespaces and underscores will be readed as folders, so class `\Namespace\Foo_Thing` would map to `{your_plugin_path}/inc/Namespace/Foo/Thing.php`
 
 But you will need to include your main plugin class (this one extending `\WPFW\Plugin` as this will be the one in charge of initializing the autoloader.
 
@@ -50,12 +43,10 @@ Notes: As recomended on the Short Code API Docs (http://codex.wordpress.org/Shor
 
 ### Custom taxonomies
 To add custom taxonomies, you only need to add some php files returning configuration arrays in the following path:
-
-{your_plugin_path}/custom/taxonomies/taxonomy-set-1.php
-{your_plugin_path}/custom/taxonomies/taxonomy-set-2.php
-{your_plugin_path}/custom/taxonomies/taxonomy-set-3.php
-
-
+`{your_plugin_path}/custom/taxonomies/taxonomy-set-1.php`
+`{your_plugin_path}/custom/taxonomies/taxonomy-set-2.php`
+`{your_plugin_path}/custom/taxonomies/taxonomy-set-3.php`
+Your configuration file should look like this:
 ```php
 /**
  *  Taxonomies sets
@@ -88,7 +79,6 @@ return [
     //You can add other taxonomy arrays here as new elements of thsi array
 ];
 ```
-
 ### Roadmap
 This is a little plan for the development of this plugin. Of course, I am waiting for your suggestions.
 
