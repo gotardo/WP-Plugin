@@ -4,12 +4,10 @@ WP Plugin
 An helper class for WordPress plugin development.
 
 ### Installing
-
 1. Upload the plugin folder to your *wp-content/pplugins* directory.
 2. Activate the plugin in the plugin administration folder. It will make the \WPFW\Plugin class available for other plugins.
 
 ### Starting your plugin
-
 In your new plugin main file you can start using some helper functions from the `\WPFW\Plugin` class. 
 
 ```php
@@ -18,11 +16,12 @@ In your new plugin main file you can start using some helper functions from the 
 ```
 
 #### Basic start
-
 Create your class extending `\WPFW\Plugin` and create an instance. This will initiate your plugin. In the following 
 
 ```php
-class MyPlugin extends \WPFW\Plugin {}
+class MyPlugin extends \WPFW\Plugin {
+//We'll leave the body of the plugin empty for now...
+}
 $aPlugin = new MyPlugin();
 ```
 
@@ -41,16 +40,15 @@ class `\Namespace\Foo_Thing` would map to `{your_plugin_path}/inc/Namespace/Foo/
 But you will need to include your main plugin class (this one extending `\WPFW\Plugin` as this will be the one in charge of initializing the autoloader.
 
 ### View renderer
+Working on this section...
 
 ### Configuration files
 If you need to use some configuration files for your plugin, you can load them in a `config.php` file in the root of your plugin directory. This file will be automatically load on plugin initialization.
 
 ### Custom shortcodes
-
 Notes: As recomended on the Short Code API Docs (http://codex.wordpress.org/Shortcode_API) don't use camelCase or upper case for the attribute names.
 
 ### Custom taxonomies
-
 To add custom taxonomies, you only need to add some php files returning configuration arrays in the following path:
 
 {your_plugin_path}/custom/taxonomies/taxonomy-set-1.php
@@ -92,7 +90,6 @@ return [
 ```
 
 ### Roadmap
-
 This is a little plan for the development of this plugin. Of course, I am waiting for your suggestions.
 
 1. v0.2 - Add support for hooks
