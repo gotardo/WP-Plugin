@@ -4,12 +4,13 @@ namespace WPFW;
 
 /**
  *
- * @author Gotardo González <contact@gotardo.es>
- * @copyright Gotardo González <contact@gotardo.es>
- * @version 0.1
- * @license MIT License
- * @see LICENSE.txt
- * @todo
+ *  @author Gotardo González <contact@gotardo.es>
+ *  @copyright Gotardo González <contact@gotardo.es>
+ *  @package WPFW
+ *  @version 0.1
+ *  @license MIT License
+ *  @see LICENSE.txt
+ *  @todo
  *      - review and document render method
  */
 
@@ -49,7 +50,6 @@ class Plugin {
             $path = $this->dirname . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
             if (file_exists($path)) require_once $path;
             else return false;
-
         });
 
         /**
@@ -157,17 +157,28 @@ class Plugin {
         return $reflector->getFileName();
     }
 
-    protected function dirname(){
+    /**
+     * Returns the name of the plugin's folder
+     * @return string The name of the folder
+     */
+    protected function dirName(){
         return dirname($this->file());
     }
 
-    protected function add_shortcode($shortcode) {
-        add_shortcode( $shortcode, [$this, "shortcode_" . $shortcode]);
+    /**
+     * Returns the name of the views folder
+     * @return string The name of the folder
+     */
+    protected function viewsFolder(){
+        return $this->dirName() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR;
     }
 
-    public function shortcodeDefault()
-    {
-        echo "<p>this is always called</p>";
+    /**
+     *  Creates a shortcode and binds a function.
+     *  @return string The name of the folder
+     */
+    protected function add_shortcode($shortcode) {
+        add_shortcode( $shortcode, [$this, "shortcode_" . $shortcode]);
     }
 
     /**
@@ -181,19 +192,6 @@ class Plugin {
     }
 
     /**
-     *  Displays a notice in the wp-admin site
-     *  @param string $text the text to show in the notif
-     *  @param string $class the type of notification
-     * @param string $style some CSS style for the notification
-     *  @return string The URL of $file
-     */
-    public static function adminNotice($text, $class='updated', $style=''){
-        add_action('admin_notices', function ($text, $class='updated', $style='') use ($text, $class, $style) {
-            printf('<div class="%s" style="%s"><p>%s</p></div>', $class, $style, $text);
-        });
-    }
-
-    /**
      *  Returns the url of a file from the current plugin
      *  @param string $file The file you need to call
      *  @return string The URL of $file
@@ -203,7 +201,7 @@ class Plugin {
     }
 
     /**
-     *  Renders a file
+     *  Render a view
      *  @param string $file the file to render
      *  @param array $params
      *  @return bool true if the file could be rendered
@@ -211,17 +209,13 @@ class Plugin {
     public function render($file, $params = []) {
 
         //Extract de paramethers for the frame to render
-        if ( is_array( $params ) )
-            extract( $params );
-
-        //Set the route
-        $route = $this->mainFolder . '/' . $file . '.php';
+        if (is_array( $params )) extract( $params );
 
         //Check if file exists before include
-        if ( file_exists($route) ) {
-            include($route);
-            return true;
-        }
+        if (file_exists($route = $this->viewsFolder . $file . '.php') )
+            return include($route);
+        elseif (file_exists($route = $this->viewsFolder . $file ) )
+            return include($route);
         //if file doesn't exist, a notice is triggered
         else {
             if ( WP_DEBUG ) {
@@ -230,6 +224,17 @@ class Plugin {
             }
             return false;
         }
+    }
+
+    /**
+     *  Displays a notice in the wp-admin site. This is an alias for Helper::adminNotice()
+     *  @param string $text the text to show in the notif
+     *  @param string $class the type of notification
+     *  @param string $style some CSS style for the notification
+     *  @return string The URL of $file
+     */
+    public static function adminNotice($text, $class='updated', $style=''){
+        Helper::adminNotice($text, $class, $style);
     }
 
     /**

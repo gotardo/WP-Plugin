@@ -24,4 +24,9 @@ This plugin makes \WPFW\* Classes available for plugin development
 == Changelog ==
 
 = 0.1 =
-* Allows to disable the XML-RPC protocol.
+* You can create shortcodes.
+* You can create custom taxonomies by including configuration files on 'custom/taxonomy' folder.
+* You can render views from 'views' folder.
+* You can autoload clases from 'inc' folder.
+* Configuration file `config.php`is autoloaded.
+* Available helpers for admin notices.
