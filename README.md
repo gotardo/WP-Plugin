@@ -8,7 +8,7 @@ A helper class for WordPress plugin development.
 2. Activate the plugin in the plugin administration folder. It will make the \WPFW\Plugin class available for other plugins.
 
 ### Starting your plugin
-In your new plugin main file you can start using some helper functions from the `\WPFW\Plugin` class. 
+Yes, this is kind of 'hello, world'. In your new plugin main file you can start using some helper functions from the `\WPFW\Plugin` class. 
 ```php
 use \WPFW\Plugin as P;
 P::adminNotice('Hello, world!');
@@ -49,6 +49,7 @@ class MyPlugin extends \WPFW\Plugin {
 This will allow you to call your shortcode `[foo attr1='value1' attr2='value2']` from your pages and posts.
 Note 1: As recomended on the Short Code API Docs (http://codex.wordpress.org/Shortcode_API) don't use camelCase or upper case for the attribute names.
 Note 2: You can use the `shortcode_atts()` function to stablish some default values (see WordPress documentation for further information).
+Note 3: WordPress default shortcodes (audio, caption, embed, gallery, video) can be overriden.
 
 ### Custom taxonomies
 To add custom taxonomies, you only need to add some php files returning configuration arrays in the following path:
