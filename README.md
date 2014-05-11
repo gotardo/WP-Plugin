@@ -10,7 +10,8 @@ A helper class for WordPress plugin development.
 ### Starting your plugin
 In your new plugin main file you can start using some helper functions from the `\WPFW\Plugin` class. 
 ```php
-\WPFW\Plugin::adminNotice('Hello, world!');
+use \WPFW\Plugin as P;
+P::adminNotice('Hello, world!');
 ```
 
 #### Basic start
