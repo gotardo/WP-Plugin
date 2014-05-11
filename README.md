@@ -1,7 +1,7 @@
 WP Plugin
 ================
 
-WP Plugin is a helper class for WordPress plugin development that can be easily installed as a plugin.
+WP Plugin provides a helper class and make it available for every plugin.
 
 ### Installing
 1. Upload the plugin folder to your *wp-content/pplugins* directory.
@@ -27,15 +27,35 @@ $aPlugin = new MyPlugin();
 Plugin class provides some helper functions that can be useful to code faster:
 `\WPFW\Plugin::adminNotice($text)` Displays an admin notice in wp-admin with the message `$text`
 
+### Paths
+There are some specific paths for your plugin's files:
+`{your_plugin_path}/custom/taxonomy/` Clases that will be autoloaded
+`{your_plugin_path}/inc/` Clases that will be autoloaded
+`{your_plugin_path}/lib/` Alternative path for clases that will be autoloaded
+`{your_plugin_path}/views/` Views
+
+
 ### Autoloader
 The plugin will try to autoload all classes from your `{your_plugin_path}/inc/` directory. You can follow a name convention to load them. Namespaces and underscores will be readed as folders, so class `\Namespace\Foo_Thing` would map to `{your_plugin_path}/inc/Namespace/Foo/Thing.php`
 But you will need to include your main plugin class (this one extending `\WPFW\Plugin` as this will be the one in charge of initializing the autoloader.
 
 ### View renderer
-Working on this section...
+Plugin class provides a render function that you can call from your plugin. It is not actually a 'complete' view system, but it will allow you to separate some html code from the logic in your plugin PHP code.
+
+First, create a view file in your `{your_plugin_path}/views/test` (e.g. `hello.php`).
+```html
+<p>
+    Hello, <?php echo $name ?>
+</p>
+```
+You will be able to render this file from any function in your plugin by calling the render function and passing the name of the view -or the name of the file- and an array containing the parameters for the view:
+```php
+$this->render('test/hello', ['name' => 'Paquito']);
+```
+The render will try to find a file at `{your_plugin_path}/views/test/hello.php` and include it.
 
 ### Configuration files
-If you need to use some configuration files for your plugin, you can load them in a `config.php` file in the root of your plugin directory. This file will be automatically load on plugin initialization.
+If you need to use some configuration files for your plugin, you can load them in a `config.php` file in the root of your plugin directory. This file will be automatically loaded by the plugin when needed.
 
 ### Custom shortcodes
 You can declare shortcodes by just declaring a public function with the name `shortcode_yourShortCodeName`.
@@ -46,7 +66,7 @@ class MyPlugin extends \WPFW\Plugin {
     }
 }
 ```
-This will allow you to call your shortcode `[foo attr1='value1' attr2='value2']` from your pages and posts.
+It allows the use of the shortcode like `[foo attr1='value1' attr2='value2']` from your pages and posts.
 Note 1: As recomended on the Short Code API Docs (http://codex.wordpress.org/Shortcode_API) don't use camelCase or upper case for the attribute names.
 Note 2: You can use the `shortcode_atts()` function to stablish some default values (see WordPress documentation for further information).
 Note 3: WordPress default shortcodes (audio, caption, embed, gallery, video) can be overriden.
@@ -90,10 +110,12 @@ return [
 ];
 ```
 ### Roadmap
-This is a little plan for the development of this plugin. Of course, I am waiting for your suggestions.
+Here you are a little plan for the development of this plugin. Of course, I am waiting for your suggestions.
 
-1. v0.2 - Add support for hooks
-1. v0.2 - Add support for filters
-1. v0.2 - Add support for enqueue styles and javascripts libraries
-1. v0.3 - Add support for admin menu
-1. v0.4 - Add support for custom post types
+1. v0.2 
+2. Add support for hooks
+2. Add support for filters
+3. Add support for enqueue styles and javascripts libraries
+1. v0.3
+2. Add support for admin menu
+2. Add support for custom post types
