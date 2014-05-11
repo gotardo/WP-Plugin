@@ -30,3 +30,13 @@ This plugin makes \WPFW\* Classes available for plugin development
 * You can autoload clases from 'inc' folder.
 * Configuration file `config.php`is autoloaded.
 * Available helpers for admin notices.
+
+
+== Upgrade Notice ==
+Please, double check that your plugins are working ok before upgrading this plugin in production environments.
+
+== Screenshots ==
+No screenshots are needed :-)
+
+== Frequently Asked Questions ==
+No FAQ -for now-
