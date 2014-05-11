@@ -1,7 +1,7 @@
 WP Plugin
 ================
 
-A helper class for WordPress plugin development.
+WP Plugin is a helper class for WordPress plugin development that can be easily installed as a plugin.
 
 ### Installing
 1. Upload the plugin folder to your *wp-content/pplugins* directory.
