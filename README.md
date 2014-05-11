@@ -27,9 +27,7 @@ Plugin class provides some helper functions that can be useful to code faster:
 `\WPFW\Plugin::adminNotice($text)` Displays an admin notice in wp-admin with the message `$text`
 
 ### Autoloader
-
 The plugin will try to autoload all classes from your `{your_plugin_path}/inc/` directory. You can follow a name convention to load them. Namespaces and underscores will be readed as folders, so class `\Namespace\Foo_Thing` would map to `{your_plugin_path}/inc/Namespace/Foo/Thing.php`
-
 But you will need to include your main plugin class (this one extending `\WPFW\Plugin` as this will be the one in charge of initializing the autoloader.
 
 ### View renderer
@@ -39,7 +37,17 @@ Working on this section...
 If you need to use some configuration files for your plugin, you can load them in a `config.php` file in the root of your plugin directory. This file will be automatically load on plugin initialization.
 
 ### Custom shortcodes
-Notes: As recomended on the Short Code API Docs (http://codex.wordpress.org/Shortcode_API) don't use camelCase or upper case for the attribute names.
+You can declare shortcodes by just declaring a public function with the name `shortcode_yourShortCodeName`.
+```php
+class MyPlugin extends \WPFW\Plugin {
+    public function shortcode_foo($atts, $content, $tag){
+        echo "This is my foo shortcode"
+    }
+}
+```
+This will allow you to call your shortcode `[foo attr1='value1' attr2='value2']` from your pages and posts.
+Note 1: As recomended on the Short Code API Docs (http://codex.wordpress.org/Shortcode_API) don't use camelCase or upper case for the attribute names.
+Note 2: You can use the `shortcode_atts()` function to stablish some default values (see WordPress documentation for further information).
 
 ### Custom taxonomies
 To add custom taxonomies, you only need to add some php files returning configuration arrays in the following path:
@@ -85,6 +93,5 @@ This is a little plan for the development of this plugin. Of course, I am waitin
 1. v0.2 - Add support for hooks
 1. v0.2 - Add support for filters
 1. v0.2 - Add support for enqueue styles and javascripts libraries
-1. v0.2 - Add support for ShortCodes closing tags
 1. v0.3 - Add support for admin menu
 1. v0.4 - Add support for custom post types
