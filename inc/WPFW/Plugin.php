@@ -11,10 +11,11 @@ namespace WPFW;
  * @see LICENSE.txt
  * @todo
  *      - review and document render method
- *      - review and document shortcodes
  */
 
 class Plugin {
+    /** @var array Configuration params */
+    private $config   = null;
 
     /** @var mixed WordPress DataBase Object */
     protected $db         = null;
@@ -25,15 +26,12 @@ class Plugin {
     /** @var string The plugin main folder */
     protected $mainFolder   = null;
 
-    /** @var array Configuration params */
-    protected $config   = null;
-
     /**
      *  Build your plugin!
      *
      *  @param array $config Plugin configuration
      */
-    function __construct($config = array()){
+    function __construct($config = []){
         global $wpdb;
 
         /** @var mixed Keep a reference to global $wpdb object */
@@ -46,7 +44,6 @@ class Plugin {
         $this->mainFolder   = dirname($this->mainFile);
 
         /** Register autoloader */
-
         spl_autoload_register( function ($class)
         {
             $path = $this->dirname . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
@@ -56,10 +53,21 @@ class Plugin {
         });
 
         /**
-         * Register install adn uninstall methods
+         * Register install and uninstall methods
          */
-        register_activation_hook    ($this->mainFile, array($this, "install")     );
-        register_deactivation_hook  ($this->mainFile, array($this, "uninstall")   );
+        register_activation_hook    ($this->mainFile, [$this, "install"]     );
+        register_deactivation_hook  ($this->mainFile, [$this, "uninstall"]   );
+
+        /**
+         * Enqueue scripts
+         */
+        add_action( 'wp_enqueue_scripts', [$this, 'front_enqueue']);
+        add_action( 'admin_enqueue_scripts', [$this, 'admin_enqueue']);
+
+        /** Autodetect shortcodes and custome taxonomies */
+        $this
+            ->_registerShortCodes()
+            ->_registerCustomTaxonomy();
 
         /**
          * Control $_POST
@@ -67,25 +75,26 @@ class Plugin {
         if ( isset($_POST) ) { $this->processPost(); }
 
 
-        /**
-         * Enqueue scripts
-         */
-
-        add_action( 'wp_enqueue_scripts',       array($this, 'front_enqueue'));
-        add_action( 'admin_enqueue_scripts',    array($this, 'admin_enqueue') );
-
-
-        /** Autodetect shortcodes */
-        $this->_registerShortCodes();
-        $this->_registerCustomTaxonomy();
     }
 
-    public function getConfig()
+    /**
+     * Returns the configuration settings for $param. If $param is not passed, it will return the whole array.
+     * @param string $param
+     * @return mixed
+     */
+    public function getConfig($param = null)
     {
         $this->config || $this->config = $this->loadConfig();
-        return $this->config;
+        if ($param)
+            return $this->config[$param];
+        else
+            return $this->config;
     }
 
+    /**
+     * Loads the configuration array from the configuration file
+     * @return array the configuration array.
+     */
     public function loadConfig()
     {
         if(file_exists($configFilePath = $this->dirname() . DIRECTORY_SEPARATOR . 'config.php'))
@@ -96,6 +105,7 @@ class Plugin {
 
     /**
      * Load the custom taxonomies configuration files
+     * @return Plugin This object
      */
     private function _registerCustomTaxonomy()
     {
@@ -104,30 +114,43 @@ class Plugin {
             foreach($path as $file)
                 if(is_array($configArray = include $file))
                     foreach ($configArray as $config)
-                    {
                         register_taxonomy($config['taxonomy'], $config['object_type'], $config['args']);
-                    }
-
         });
+
+        return $this;
     }
 
+    /**
+     * Autodetect and register shortcodes
+     * @return Plugin This object
+     */
     private function _registerShortCodes()
     {
-
-        $methods = get_class_methods($this);
-
-        foreach ($methods as $method) {
+        foreach (get_class_methods($this) as $method) {
             if(preg_match("#^shortcode_.*#s",$method)){
                 $this->add_shortcode(substr($method, 10));
             }
         }
+
+        return $this;
     }
 
+    /**
+     * Allows you get values through a wrapper function with an attribute syntax.
+     *
+     * @param string $name the name of the attribute
+     * @return mixed
+     */
     public function __get($name)
     {
         return $this->$name();
     }
 
+    /**
+     * The name of the main class file.
+     *
+     * @return string The name of the file
+     */
     protected function file()
     {
         $reflector = new \ReflectionClass(get_called_class());
@@ -139,9 +162,13 @@ class Plugin {
     }
 
     protected function add_shortcode($shortcode) {
-        add_shortcode( $shortcode, array($this, "shortcode_" . $shortcode) );
+        add_shortcode( $shortcode, [$this, "shortcode_" . $shortcode]);
     }
 
+    public function shortcodeDefault()
+    {
+        echo "<p>this is always called</p>";
+    }
 
     /**
      *  Process $_POST data
@@ -176,12 +203,12 @@ class Plugin {
     }
 
     /**
-     * Renders a file
-     * @param string $file the file to render
-     * @return bool true if the file could be rendered
-     *
+     *  Renders a file
+     *  @param string $file the file to render
+     *  @param array $params
+     *  @return bool true if the file could be rendered
      */
-    public function render($file, $params = array()) {
+    public function render($file, $params = []) {
 
         //Extract de paramethers for the frame to render
         if ( is_array( $params ) )
